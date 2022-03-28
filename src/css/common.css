@@ -58,6 +58,7 @@ img {
 
 [data-start]:disabled,
 [data-stop]:disabled {
-  cursor: not-allowed;
   color: inherit;
+
+  cursor: not-allowed;
 }
