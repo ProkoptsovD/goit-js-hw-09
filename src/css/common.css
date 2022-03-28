@@ -35,8 +35,8 @@ img {
   left: 0;
 }
 
-[data-start],
-[data-stop] {
+.switcher [data-start],
+.switcher [data-stop] {
   width: 100px;
   height: 50px;
 
@@ -50,16 +50,114 @@ img {
   transition: background-color 250ms linear, color 250ms linear;
 }
 
-[data-start]:not(:disabled):hover,
-[data-stop]:not(:disabled):hover {
+.switcher [data-start]:not(:disabled):hover,
+.switcher [data-stop]:not(:disabled):hover {
   color: firebrick;
   background-color: wheat;
 }
 
-[data-start]:disabled,
-[data-stop]:disabled {
+.switcher [data-start]:disabled,
+.switcher [data-stop]:disabled {
   color: inherit;
 
   cursor: not-allowed;
 }
 /* end of CCS styles for 01-color-switcher */
+
+/* 02-timer CSS styles start here */
+body.body {
+  background-color: #f1b15f;
+}
+
+#datetime-picker,
+.body button[data-start] {
+  display: inline-block;
+
+  font-size: 1rem;
+}
+
+#datetime-picker {
+  width: 200px;
+  height: 50px;
+
+  padding: 10px;
+  margin-left: calc(100% / 2 - 125px);
+
+  border: none;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+#datetime-picker:focus-within {
+  outline: 2px solid olive;
+}
+
+.body button[data-start] {
+  width: 50px;
+  height: 50px;
+
+  text-align: center;
+
+  border: none;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+
+  cursor: pointer;
+}
+
+.body .timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 30px;
+}
+
+.mb {
+  position: absolute;
+  right: 200px;
+  bottom: 50px;
+
+  background-color: transparent;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 150px;
+  height: 150px;
+
+  margin-right: 10px;
+
+  font-weight: 700;
+  text-transform: uppercase;
+
+  color: #ffffff;
+}
+
+.field:last-child {
+  margin-right: 0;
+}
+
+.value {
+  display: block;
+
+  font-size: 3rem;
+}
+
+.value::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 5px;
+
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  border-radius: 0.5rem;
+
+  background-color: #000000;
+}
