@@ -4,9 +4,12 @@ const refs = {
   intervalId: null,
 };
 
-refs.stopBtn.setAttribute('disabled', 'disabled');
 refs.startBtn.addEventListener('click', onStartBtnClick);
 refs.stopBtn.addEventListener('click', onStopBtnClick);
+
+//для CSS-стилей
+document.body.classList.add('switcher');
+refs.stopBtn.setAttribute('disabled', 'disabled');
 
 //обрабатывает событие "клик" на кнопке startBtn
 function onStartBtnClick() {
