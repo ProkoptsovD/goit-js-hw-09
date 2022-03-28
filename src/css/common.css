@@ -88,8 +88,9 @@ body.body {
   border-bottom-left-radius: 5px;
 }
 
-#datetime-picker:focus-within {
-  outline: 2px solid olive;
+#datetime-picker:focus-within,
+#datetime-picker:hover {
+  outline: 2px solid skyblue;
 }
 
 .body button[data-start] {
@@ -103,6 +104,10 @@ body.body {
   border-bottom-right-radius: 5px;
 
   cursor: pointer;
+}
+
+.body button[data-start]:disabled {
+  cursor: not-allowed;
 }
 
 .body .timer {

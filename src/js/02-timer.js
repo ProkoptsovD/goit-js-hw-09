@@ -4,11 +4,11 @@ const orangeTheme = require('flatpickr/dist/themes/material_blue.css');
 
 const refs = {
   inputDatetimePicker: document.querySelector('#datetime-picker'),
-  startCoundownBtn: document.querySelector([['data-start']]),
+  startCoundownBtn: document.querySelector('[data-start]'),
   timer: document.querySelector('.timer'),
 };
 
-const options = {
+const flatpickrOptions = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
@@ -18,4 +18,6 @@ const options = {
   },
 };
 
-flatpickr(refs.inputDatetimePicker, options);
+flatpickr(refs.inputDatetimePicker, flatpickrOptions);
+
+refs.startCoundownBtn.setAttribute('disabled', 'disabled');
