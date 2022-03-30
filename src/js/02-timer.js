@@ -1,9 +1,14 @@
 // кастомный класс Timer
 import Timer from './Timer';
+
+// библиотка flatpickr
 import flatpickr from 'flatpickr';
-import { flatpickrOptions } from './flatpickr-options';
+import { flatpickrOptions } from './options';
 import 'flatpickr/dist/flatpickr.min.css';
+
+// библиотка notify
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { notifyOptions } from './options';
 const orangeTheme = require('flatpickr/dist/themes/material_blue.css');
 
 const refs = {
@@ -37,10 +42,10 @@ function onDatetimePickerInputClick() {
 function onDatetimeSet() {
   if (!timer.isDatetimeSet()) {
     timer.onWrongDatetimePicked(refs.startCoundownBtn);
-    Notify.failure('Please, pick up a date in the future');
+    Notify.failure('Please, pick up a date in the future', notifyOptions);
     return;
   }
 
   timer.onCorectDatetimePicked(refs.startCoundownBtn);
-  Notify.success("All's good! You may start the countdown");
+  Notify.success("All's good! You may start the countdown", notifyOptions);
 }
