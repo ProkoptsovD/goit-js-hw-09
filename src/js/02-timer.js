@@ -1,12 +1,10 @@
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
-const orangeTheme = require('flatpickr/dist/themes/material_blue.css');
-
 // кастомный класс Timer
 import Timer from './Timer';
-
-//объект настроек для библиотеки flatpickr
+import flatpickr from 'flatpickr';
 import { flatpickrOptions } from './flatpickr-options';
+import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+const orangeTheme = require('flatpickr/dist/themes/material_blue.css');
 
 const refs = {
   inputDatetimePicker: document.querySelector('#datetime-picker'),
@@ -16,30 +14,33 @@ const refs = {
 //делает кнопку неактивной до начала выбора времени отсчета
 refs.startCoundownBtn.setAttribute('disabled', 'disabled');
 
-// создает таймер и создает поле выбора даты для библиотеки flatpickr
 const timer = new Timer();
 timer.createDatetimePicker(refs.inputDatetimePicker, flatpickr, flatpickrOptions);
 
-// узнаем выбранное время
-refs.inputDatetimePicker.addEventListener('input', e => {
-  refs.startCoundownBtn.addEventListener(
-    'click',
-    () => {
-      timer.startCoundown();
-    },
-    { once: true },
-  );
-  const selectedDatetime = Date.parse(timer.flatpickr.selectedDates[0]);
+refs.inputDatetimePicker.addEventListener('input', onDatetimePickerInput);
 
-  if (!timer.isDatetimeValid(selectedDatetime)) {
+function onDatetimePickerInput() {
+  refs.startCoundownBtn.addEventListener('click', onStartCoundownBtnClick, { once: true });
+  refs.inputDatetimePicker.addEventListener('click', onDatetimePickerInputClick, { once: true });
+
+  onDatetimeSet();
+}
+
+function onStartCoundownBtnClick() {
+  timer.startCoundown();
+}
+
+function onDatetimePickerInputClick() {
+  clearInterval(timer.intervalId);
+}
+
+function onDatetimeSet() {
+  if (!timer.isDatetimeSet()) {
     timer.onWrongDatetimePicked(refs.startCoundownBtn);
-    alert('wrong datetime');
+    Notify.failure('Please, pick up a date in the future');
     return;
   }
 
-  timer.onCorectDatetimePicked(refs.startCoundownBtn, selectedDatetime);
-});
-
-// onStartCountdownBtnClick() {
-
-// }
+  timer.onCorectDatetimePicked(refs.startCoundownBtn);
+  Notify.success("All's good! You may start the countdown");
+}
