@@ -1,4 +1,18 @@
+// библиотка flatpickr
+import flatpickr from 'flatpickr';
+import { flatpickrOptions } from './options';
+import 'flatpickr/dist/flatpickr.min.css';
+
+// библиотка notify
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { notifyOptions } from './options';
+
 export default class Timer {
+  static refs = {
+    dateTimePicker: document.querySelector('#datetime-picker'),
+    startCountdownBtn: document.querySelector('[data-start]'),
+    clockFaceUiElements: document.querySelectorAll('.value'),
+  };
   static convertMs(ms) {
     const second = 1000;
     const minute = second * 60;
@@ -24,17 +38,57 @@ export default class Timer {
   #pickedTime;
 
   constructor() {
+    this.dateTimePicker = null;
     this.#days = null;
     this.#hours = null;
     this.#minutes = null;
     this.#seconds = null;
-    this.dateTimePicker = null;
     this.#intervalId = null;
     this.#pickedTime = null;
+
+    this.initialize();
   }
 
-  createDatetimePicker(element, callback, options = {}) {
-    this.dateTimePicker = callback(element, options);
+  initialize() {
+    this.dateTimePicker = flatpickr(Timer.refs.dateTimePicker, flatpickrOptions);
+    Timer.refs.dateTimePicker.addEventListener('input', () => {
+      this.onDatetimePickerInput();
+    });
+  }
+
+  onDatetimePickerInput() {
+    Timer.refs.dateTimePicker.addEventListener(
+      'click',
+      () => {
+        console.log('here');
+        this.stopCountdown();
+      },
+      { once: true },
+    );
+    Timer.refs.startCountdownBtn.addEventListener(
+      'click',
+      () => {
+        this.startCountdown();
+      },
+      { once: true },
+    );
+
+    this.onDatetimeSet();
+  }
+
+  stopCountdown() {
+    clearInterval(this.intervalId);
+  }
+
+  onDatetimeSet() {
+    if (!this.isDatetimeSet()) {
+      this.onWrongDatetimePicked();
+      Notify.failure('Please, pick up a date in the future', notifyOptions);
+      return;
+    }
+
+    this.onCorectDatetimePicked();
+    Notify.success("All's good! You may start the countdown", notifyOptions);
   }
 
   get pickedTime() {
@@ -53,7 +107,7 @@ export default class Timer {
     this.#intervalId = newId;
   }
 
-  startCoundown() {
+  startCountdown() {
     this.intervalId = setInterval(() => {
       const { days, hours, minutes, seconds } = Timer.convertMs(
         this.#pickedTime - Date.parse(new Date()),
@@ -69,9 +123,7 @@ export default class Timer {
   }
 
   updateClockFaceUI() {
-    const clockFaceUiElements = document.querySelectorAll('.value');
-
-    clockFaceUiElements.forEach(element => {
+    Timer.refs.clockFaceUiElements.forEach(element => {
       const datetimeName = Object.keys(element.dataset).join``;
 
       switch (datetimeName) {
@@ -99,13 +151,13 @@ export default class Timer {
     return value.padStart(2, '0');
   }
 
-  onWrongDatetimePicked(elem) {
+  onWrongDatetimePicked() {
     this.#pickedTime = null;
-    elem.setAttribute('disabled', 'disabled');
+    Timer.refs.startCountdownBtn.setAttribute('disabled', 'disabled');
   }
 
-  onCorectDatetimePicked(elem) {
-    elem.removeAttribute('disabled');
+  onCorectDatetimePicked() {
+    Timer.refs.startCountdownBtn.removeAttribute('disabled');
   }
 
   isDatetimeSet() {
