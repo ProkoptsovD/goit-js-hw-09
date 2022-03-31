@@ -5,25 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Promise generator</title>
     <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/03-promises.css">
   </head>
   <body>
     <p><a href="index.html">Go back</a></p>
 
     <form class="form">
-      <label>
+      <label class="top-text">
         First delay (ms)
-        <input type="number" name="delay" required />
+        <input class="input" type="number" name="delay" required />
       </label>
-      <label>
+      <label class="top-text">
         Delay step (ms)
-        <input type="number" name="step" required />
+        <input class="input" type="number" name="step" required />
       </label>
-      <label>
+      <label class="top-text">
         Amount
-        <input type="number" name="amount" required />
+        <input class="input" type="number" name="amount" required />
       </label>
-      <button type="submit">Create promises</button>
+      <button class="submit" type="submit">Create promises</button>
     </form>
+
+    <small>
+      by
+      <a href="https://codepen.io/richpointofview">
+        @richpointofview
+      </a>
+    </small>
 
     <script src="js/03-promises.js"></script>
   </body>
