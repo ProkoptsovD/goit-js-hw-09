@@ -2,12 +2,18 @@
 import flatpickr from 'flatpickr';
 import { flatpickrOptions } from './options';
 import 'flatpickr/dist/flatpickr.min.css';
+const orangeTheme = require('flatpickr/dist/themes/material_blue.css');
 
 // библиотка notify
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { notifyOptions } from './options';
 
 export default class Timer {
+  static BTN_STATES = {
+    enabled: 'enabled',
+    disabled: 'disabled',
+  };
+
   static refs = {
     dateTimePicker: document.querySelector('#datetime-picker'),
     startCountdownBtn: document.querySelector('[data-start]'),
@@ -50,21 +56,20 @@ export default class Timer {
   }
 
   initialize() {
+    this.startBtnState('disabled');
+
     this.dateTimePicker = flatpickr(Timer.refs.dateTimePicker, flatpickrOptions);
     Timer.refs.dateTimePicker.addEventListener('input', () => {
       this.onDatetimePickerInput();
     });
+
+    Timer.refs.dateTimePicker.addEventListener('click', () => {
+      this.stopCountdown();
+      this.startBtnState('disabled');
+    });
   }
 
   onDatetimePickerInput() {
-    Timer.refs.dateTimePicker.addEventListener(
-      'click',
-      () => {
-        console.log('here');
-        this.stopCountdown();
-      },
-      { once: true },
-    );
     Timer.refs.startCountdownBtn.addEventListener(
       'click',
       () => {
@@ -83,28 +88,32 @@ export default class Timer {
   onDatetimeSet() {
     if (!this.isDatetimeSet()) {
       this.onWrongDatetimePicked();
-      Notify.failure('Please, pick up a date in the future', notifyOptions);
       return;
     }
 
     this.onCorectDatetimePicked();
+  }
+
+  onWrongDatetimePicked() {
+    this.#pickedTime = null;
+    this.startBtnState('disabled');
+    Notify.failure('Please, pick up a date in the future', notifyOptions);
+  }
+
+  onCorectDatetimePicked() {
+    this.startBtnState('enabled');
     Notify.success("All's good! You may start the countdown", notifyOptions);
   }
 
-  get pickedTime() {
-    return this.#pickedTime;
-  }
-
-  set pickedTime(newTime) {
-    this.#pickedTime = newTime;
-  }
-
-  get intervalId() {
-    return this.#intervalId;
-  }
-
-  set intervalId(newId) {
-    this.#intervalId = newId;
+  startBtnState(state) {
+    switch (state) {
+      case Timer.BTN_STATES.enabled:
+        Timer.refs.startCountdownBtn.removeAttribute('disabled');
+        break;
+      case Timer.BTN_STATES.disabled:
+        Timer.refs.startCountdownBtn.setAttribute('disabled', 'disabled');
+        break;
+    }
   }
 
   startCountdown() {
@@ -120,6 +129,8 @@ export default class Timer {
 
       this.updateClockFaceUI();
     }, 1000);
+
+    this.startBtnState('disabled');
   }
 
   updateClockFaceUI() {
@@ -151,21 +162,12 @@ export default class Timer {
     return value.padStart(2, '0');
   }
 
-  onWrongDatetimePicked() {
-    this.#pickedTime = null;
-    Timer.refs.startCountdownBtn.setAttribute('disabled', 'disabled');
-  }
-
-  onCorectDatetimePicked() {
-    Timer.refs.startCountdownBtn.removeAttribute('disabled');
-  }
-
   isDatetimeSet() {
     const currentDate = Date.parse(new Date());
     const timeToSet = Date.parse(this.dateTimePicker.selectedDates[0]);
     const timeDifference = timeToSet - currentDate;
 
-    if (this.isDateValid(timeDifference)) {
+    if (!this.isDateValid(timeDifference)) {
       this.#pickedTime = null;
       return false;
     }
@@ -175,6 +177,20 @@ export default class Timer {
   }
 
   isDateValid(dateTimeToValidate) {
-    return dateTimeToValidate < 0;
+    return dateTimeToValidate > 0;
+  }
+
+  get pickedTime() {
+    return this.#pickedTime;
+  }
+  set pickedTime(newTime) {
+    this.#pickedTime = newTime;
+  }
+
+  get intervalId() {
+    return this.#intervalId;
+  }
+  set intervalId(newId) {
+    this.#intervalId = newId;
   }
 }
