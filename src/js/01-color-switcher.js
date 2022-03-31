@@ -1,38 +1,51 @@
 const refs = {
   startBtn: document.querySelector('button[data-start]'),
   stopBtn: document.querySelector('button[data-stop]'),
+  body: document.querySelector('body'),
+
   intervalId: null,
 };
 
-refs.startBtn.addEventListener('click', onStartBtnClick);
-refs.stopBtn.addEventListener('click', onStopBtnClick);
+refs.startBtn.addEventListener('click', onStartBtnClickChangeBgColor);
+refs.stopBtn.addEventListener('click', onStopBtnClickStopBgColorChanging);
 
 //для CSS-стилей
-document.body.classList.add('switcher');
+refs.body.classList.add('switcher');
 refs.stopBtn.setAttribute('disabled', 'disabled');
 
 //обрабатывает событие "клик" на кнопке startBtn
-function onStartBtnClick() {
-  refs.intervalId = setInterval(changeBodyBgColor, 1000);
-  toggleAttribute('disabled');
+function onStartBtnClickChangeBgColor() {
+  refs.intervalId = setInterval(() => {
+    changeBgColor(refs.body);
+  }, 1000);
+  setBtnState(refs.startBtn, 'disabled');
+  setBtnState(refs.stopBtn, 'enabled');
 }
 
 //обрабатывает событие "клик" на кнопке startBtn
-function onStopBtnClick() {
+function onStopBtnClickStopBgColorChanging() {
   clearInterval(refs.intervalId);
-  toggleAttribute('disabled');
+  setBtnState(refs.startBtn, 'enabled');
+  setBtnState(refs.stopBtn, 'disabled');
 }
 
 //изменяет фоновый цвет body
-function changeBodyBgColor() {
-  const bodyRef = document.querySelector('body');
-  bodyRef.style.backgroundColor = getRandomHexColor();
+function changeBgColor(element) {
+  element.style.backgroundColor = getRandomHexColor();
 }
 
 //выполняет toggle атрубута disabled у кнопок startBtn и stopBtn
-function toggleAttribute(attribute) {
-  refs.startBtn.toggleAttribute(attribute);
-  refs.stopBtn.toggleAttribute(attribute);
+function setBtnState(element, attribute) {
+  const ATTRIBUTE_PROPERTY = 'disabled';
+
+  switch (attribute) {
+    case 'disabled':
+      element.setAttribute(ATTRIBUTE_PROPERTY, ATTRIBUTE_PROPERTY);
+      break;
+    case 'enabled':
+      element.removeAttribute(ATTRIBUTE_PROPERTY);
+      break;
+  }
 }
 
 //генерация случайного цвета
