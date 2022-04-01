@@ -29,10 +29,8 @@ img {
   height: 90vh;
 }
 
-.switcher p {
-  position: absolute;
-  top: 0;
-  left: 0;
+.switcher p a {
+  color: #000000;
 }
 
 .switcher [data-start],
