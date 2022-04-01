@@ -21,9 +21,15 @@ function onFormSubmitCreatePomises(e) {
     delayStep += step;
 
     createPromise(i, delayStep)
-      .then(result => Notify.success(result, { useIcon: false, fontSize: '1rem' }))
-      .catch(result => Notify.failure(result, { useIcon: false, fontSize: '1rem' }));
+      .then(result =>
+        Notify.success(result, { useIcon: false, fontSize: '1rem', timeout: delayStep }),
+      )
+      .catch(result =>
+        Notify.failure(result, { useIcon: false, fontSize: '1rem', timeout: delayStep }),
+      );
   }
+
+  Notify.info('Promises are running', { timeout: delay });
 }
 
 function createPromise(position, delay) {
