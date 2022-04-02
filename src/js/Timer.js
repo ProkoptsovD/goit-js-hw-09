@@ -57,10 +57,14 @@ export default class Timer {
 
   initialize() {
     this.startBtnState('disabled');
-
     this.dateTimePicker = flatpickr(Timer.refs.dateTimePicker, flatpickrOptions);
+
     Timer.refs.dateTimePicker.addEventListener('input', () => {
       this.onDatetimePickerInput();
+    });
+
+    Timer.refs.startCountdownBtn.addEventListener('click', () => {
+      this.startCountdown();
     });
 
     Timer.refs.dateTimePicker.addEventListener('click', () => {
@@ -70,14 +74,6 @@ export default class Timer {
   }
 
   onDatetimePickerInput() {
-    Timer.refs.startCountdownBtn.addEventListener(
-      'click',
-      () => {
-        this.startCountdown();
-      },
-      { once: true },
-    );
-
     this.onDatetimeSet();
   }
 
